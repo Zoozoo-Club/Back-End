@@ -24,8 +24,6 @@ public class User {
 
     private String password;
 
-    private String imgUrl;
-
     private Boolean publicPersonalInfo;
 
     // FK 추가
