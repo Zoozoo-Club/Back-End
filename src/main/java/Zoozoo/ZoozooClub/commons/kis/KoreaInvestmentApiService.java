@@ -20,8 +20,8 @@ import java.time.Duration;
 public class KoreaInvestmentApiService {
 
     private static final String BASE_URL = "https://openapivts.koreainvestment.com:29443";
-    private static final String API_KEY = "PSXM8wuPZ3gNUosdS3MApfsLtd0OEuWZ69nD";
-    private static final String API_SECRET = "1a4l1AYE08VluTNTiGZ9CqsGyDQvWZoyONeP53qQOV7kZ4sBPpr0BLd5IVhjr/qzlgrzmWd72ncgz3TGb7SBTtlKkXwLJOp8csrBxLHFey8Fa9EeIMIQjoPqwlSZBw0UYD6H9GAK7hn4UIqsQNJwZGzIhdzxJ8mh1eTKi2Sz6OWYTJ8vwio=";
+    private static final String API_KEY = "";
+    private static final String API_SECRET = "";
 
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(10))
@@ -37,7 +37,7 @@ public class KoreaInvestmentApiService {
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
-                    .header("authorization", "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0b2tlbiIsImF1ZCI6IjBiYzVjNjc4LWVkNzctNDA1ZS05YzNhLTcxMjc2ZjQxNTY5ZiIsInByZHRfY2QiOiIiLCJpc3MiOiJ1bm9ndyIsImV4cCI6MTcyOTgzMzY0MSwiaWF0IjoxNzI5NzQ3MjQxLCJqdGkiOiJQU1hNOHd1UFozZ05Vb3NkUzNNQXBmc0x0ZDBPRXVXWjY5bkQifQ.g3DqT7hjvNvz_ZT1A3eB151lZ2toe-1gt8WkJ2-lSf53TrxV28bbfLIr9UTzdn7wR1p-aA2wCKiLdBrDc1CPDQ")  // 실제 토큰으로 교체 필요
+                    .header("authorization", "Bearer " + "")  // 실제 토큰으로 교체 필요
                     .header("appkey", API_KEY)
                     .header("appsecret", API_SECRET)
                     .header("tr_id", "FHPST01060000")
@@ -80,7 +80,7 @@ public class KoreaInvestmentApiService {
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
-                    .header("authorization", "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0b2tlbiIsImF1ZCI6IjBiYzVjNjc4LWVkNzctNDA1ZS05YzNhLTcxMjc2ZjQxNTY5ZiIsInByZHRfY2QiOiIiLCJpc3MiOiJ1bm9ndyIsImV4cCI6MTcyOTgzMzY0MSwiaWF0IjoxNzI5NzQ3MjQxLCJqdGkiOiJQU1hNOHd1UFozZ05Vb3NkUzNNQXBmc0x0ZDBPRXVXWjY5bkQifQ.g3DqT7hjvNvz_ZT1A3eB151lZ2toe-1gt8WkJ2-lSf53TrxV28bbfLIr9UTzdn7wR1p-aA2wCKiLdBrDc1CPDQ")  // 인증 토큰
+                    .header("authorization", "Bearer " + "")  // 인증 토큰
                     .header("appkey", API_KEY)                     // 앱 키
                     .header("appsecret", API_SECRET)              // 앱 시크릿
                     .header("tr_id", "VTTC8434R")                 // 거래ID
