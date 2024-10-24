@@ -23,7 +23,7 @@ public class AuthConfig implements WebMvcConfigurer {
 //                .excludePathPatterns("/**")
 //                .addPathPatterns("");
 
-        registry.addInterceptor(loginInterceptor).addPathPatterns("/**");
+//        registry.addInterceptor(loginInterceptor).addPathPatterns("/**");
     }
 
     @Override
