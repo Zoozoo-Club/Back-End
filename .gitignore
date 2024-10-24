@@ -11,7 +11,6 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear
@@ -25,7 +24,6 @@ replay_pid*
 
 build
 .idea
-gradle
 .gradle
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows,intellij+all,java,git
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,intellij+all,java,git
