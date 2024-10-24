@@ -23,7 +23,6 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String img;
     private String email;
     private Date estDt;
     private String corpCls;
