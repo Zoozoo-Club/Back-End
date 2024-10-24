@@ -6,6 +6,7 @@ import Zoozoo.ZoozooClub.commons.kis.dto.BalanceResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -20,8 +21,19 @@ import java.time.Duration;
 public class KoreaInvestmentApiService {
 
     private static final String BASE_URL = "https://openapivts.koreainvestment.com:29443";
-    private static final String API_KEY = "";
-    private static final String API_SECRET = "";
+
+    @Value("${korea-investment.api.key}")
+    private String apiKey;
+
+    @Value("${korea-investment.api.secret}")
+    private String apiSecret;
+
+    @Value("${korea-investment.api.account-number}")
+    private String accountNumber;
+
+    @Value("${korea-investment.api.token}")
+    private String token;
+
 
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(10))
@@ -37,9 +49,9 @@ public class KoreaInvestmentApiService {
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
-                    .header("authorization", "Bearer " + "")  // 실제 토큰으로 교체 필요
-                    .header("appkey", API_KEY)
-                    .header("appsecret", API_SECRET)
+                    .header("authorization", "Bearer " + token)  // 실제 토큰으로 교체 필요
+                    .header("appkey", apiKey)
+                    .header("appsecret", apiSecret)
                     .header("tr_id", "FHPST01060000")
                     .header("Content-Type", "application/json")
                     .GET()
@@ -65,7 +77,7 @@ public class KoreaInvestmentApiService {
     public BalanceResponseDTO getStockBalance() {
         try {
             String url = String.format("%s/uapi/domestic-stock/v1/trading/inquire-balance" +
-                            "?CANO=50112303" +           // 계좌번호
+                            "?CANO=%s" +           // 계좌번호
                             "&ACNT_PRDT_CD=01" +         // 계좌상품코드
                             "&AFHR_FLPR_YN=N" +          // 시간외단일가여부
                             "&OFL_YN=" +                 // 오프라인여부
@@ -76,13 +88,13 @@ public class KoreaInvestmentApiService {
                             "&PRCS_DVSN=01" +           // 처리구분
                             "&CTX_AREA_FK100=" +         // 연속조회검색조건
                             "&CTX_AREA_NK100=",          // 연속조회검색조건
-                    BASE_URL);
+                    BASE_URL,accountNumber);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
-                    .header("authorization", "Bearer " + "")  // 인증 토큰
-                    .header("appkey", API_KEY)                     // 앱 키
-                    .header("appsecret", API_SECRET)              // 앱 시크릿
+                    .header("authorization", "Bearer " + token)  // 인증 토큰
+                    .header("appkey", apiKey)                     // 앱 키
+                    .header("appsecret", apiSecret)              // 앱 시크릿
                     .header("tr_id", "VTTC8434R")                 // 거래ID
                     .header("Content-Type", "application/json")    // 컨텐츠 타입
                     .GET()
