@@ -5,12 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BalanceResponseDTO {
+public class BalanceResponseDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
 
     private List<BalanceOutput1> output1;
     private List<BalanceOutput2> output2;
@@ -20,7 +24,8 @@ public class BalanceResponseDTO {
     @Getter
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)  // 추가
-    public static class BalanceOutput1 {
+    public static class BalanceOutput1 implements Serializable {
+        private static final long serialVersionUID = 1L;
         /**
          * 종목코드
          */
@@ -32,7 +37,6 @@ public class BalanceResponseDTO {
          */
         @JsonProperty("prdt_name")
         private String stockName;
-
         /**
          * 보유수량
          */
@@ -75,12 +79,26 @@ public class BalanceResponseDTO {
                     .append(evluAmt).append('[').append(evluPflsAmt).append("]: ").append(evluPflsRt);
             return stringBuilder.toString();
         }
+
+        public Map<String, Object> getMap() {
+            return Map.ofEntries(
+                    Map.entry( "stockCode", this.stockCode ),
+                    Map.entry( "stockName", this.stockName ),
+                    Map.entry( "quantity", this.quantity ),
+                    Map.entry( "evluAmt", this.evluAmt ),
+                    Map.entry( "evluPflsAmt", this.evluPflsAmt ),
+                    Map.entry( "evluPflsRt", this.evluPflsRt ),
+                    Map.entry( "pchsAvgPric", this.pchsAvgPric ),
+                    Map.entry("currentPrice", this.currentPrice)
+            );
+        }
     }
 
     @Getter
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)  // 추가
-    public static class BalanceOutput2 {
+    public static class BalanceOutput2 implements Serializable {
+        private static final long serialVersionUID = 1L;
         /**
          * 평가손익합계금액
          */
@@ -92,5 +110,12 @@ public class BalanceResponseDTO {
          */
         @JsonProperty("pchs_amt_smtl_amt")
         private String pchsAmtSmtlAmt;
+
+        public Map<String, Object> getMap() {
+            return Map.ofEntries(
+                    Map.entry( "evluPflsSmtlAmt", this.evluPflsSmtlAmt ),
+                    Map.entry( "pchsAmtSmtlAmt", this.pchsAmtSmtlAmt )
+            );
+        }
     }
 }
