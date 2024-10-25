@@ -69,6 +69,12 @@ public class BalanceResponseDTO {
         @JsonProperty("prpr")
         private String currentPrice;
 
+        public String toString(){
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append('[').append(stockCode).append(']').append('[').append(stockName).append("]: ").append(quantity)
+                    .append(evluAmt).append('[').append(evluPflsAmt).append("]: ").append(evluPflsRt);
+            return stringBuilder.toString();
+        }
     }
 
     @Getter
