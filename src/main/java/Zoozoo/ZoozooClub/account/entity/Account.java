@@ -19,6 +19,8 @@ public class Account {
 
     private String acctNo;
 
+    private String appKey;
+
     private String secretKey;
 
     private String accessToken;
