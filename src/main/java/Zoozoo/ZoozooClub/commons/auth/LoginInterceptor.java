@@ -31,7 +31,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     private boolean isPassRequest(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        return uri.contains("swagger") || uri.contains("api-docs") || uri.contains("webjars") || uri.contains("auth") || uri.contains("ranking");
+        return uri.contains("swagger") || uri.contains("api-docs") || uri.contains("webjars") || uri.contains("auth") || uri.contains("ranking") || uri.contains("clubs");
     }
 
     private boolean isPreflight(HttpServletRequest request) {
