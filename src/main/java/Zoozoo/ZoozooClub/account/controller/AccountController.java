@@ -16,7 +16,7 @@ public class AccountController {
 
     @GetMapping("/all")
     public ResponseEntity<List<Account>> getAccounts() {
-        List<Account> accounts = accountService.getAccounts();
+        List<Account> accounts = accountService.getAllAccounts();
         return ResponseEntity.ok(accounts);
     }
 }

@@ -11,11 +11,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountService {
     private final AccountRepository accountRepository;
-    public List<Account> getAccounts() {
+    public List<Account> getAllAccounts() {
         return accountRepository.findAll();
     }
 
-    public Account getAccount(Long accountId) {
+    public Account getAccountById(Long accountId) {
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account not found with id: " + accountId));
     }
