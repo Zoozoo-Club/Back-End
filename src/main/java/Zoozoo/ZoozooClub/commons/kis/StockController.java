@@ -26,7 +26,7 @@ public class StockController {
     @GetMapping("/my-story/assets/{accountId}")
     public ResponseEntity<BalanceResponseDTO> getStockBalance(@PathVariable Long accountId) {
 
-        Account account = accountService.getAccount(accountId);
+        Account account = accountService.getAccountById(accountId);
         BalanceResponseDTO balance = koreaInvestmentApiService.getStockBalance(account);
         return ResponseEntity.ok(balance);
     }
