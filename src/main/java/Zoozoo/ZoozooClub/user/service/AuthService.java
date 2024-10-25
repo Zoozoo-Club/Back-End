@@ -34,4 +34,8 @@ public class AuthService {
 
     }
 
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(NoUserException::new);
+    }
+
 }
