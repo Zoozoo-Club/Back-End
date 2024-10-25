@@ -7,4 +7,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthLoginResponseDto {
     private final String token;
+    private final String nickname;
 }

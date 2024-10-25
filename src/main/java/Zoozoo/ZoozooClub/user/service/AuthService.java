@@ -25,9 +25,9 @@ public class AuthService {
         //todo password 검토
         if(user.getPassword().equals(password)) {
             if(user.getClub() == null) {
-                return new AuthLoginResponseDto(jwtUtil.createToken(user.getId(), null));
+                return new AuthLoginResponseDto(jwtUtil.createToken(user.getId(), null), user.getNickname());
             }
-            return new AuthLoginResponseDto(jwtUtil.createToken(user.getId(), user.getClub().getId()));
+            return new AuthLoginResponseDto(jwtUtil.createToken(user.getId(), user.getClub().getId()), user.getNickname());
         }
 
         throw new NotCorrectPasswordException();
