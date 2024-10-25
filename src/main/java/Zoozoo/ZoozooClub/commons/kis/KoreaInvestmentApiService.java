@@ -1,6 +1,7 @@
 package Zoozoo.ZoozooClub.commons.kis;
 
 
+import Zoozoo.ZoozooClub.account.entity.Account;
 import Zoozoo.ZoozooClub.commons.kis.dto.ApiResponseDTO;
 import Zoozoo.ZoozooClub.commons.kis.dto.BalanceResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,7 +75,7 @@ public class KoreaInvestmentApiService {
         }
     }
 
-    public BalanceResponseDTO getStockBalance() {
+    public BalanceResponseDTO getStockBalance(Account account) {
         try {
             String url = String.format("%s/uapi/domestic-stock/v1/trading/inquire-balance" +
                             "?CANO=%s" +           // 계좌번호
@@ -88,13 +89,13 @@ public class KoreaInvestmentApiService {
                             "&PRCS_DVSN=01" +           // 처리구분
                             "&CTX_AREA_FK100=" +         // 연속조회검색조건
                             "&CTX_AREA_NK100=",          // 연속조회검색조건
-                    BASE_URL,accountNumber);
+                    BASE_URL,account.getAcctNo());
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
-                    .header("authorization", "Bearer " + token)  // 인증 토큰
-                    .header("appkey", apiKey)                     // 앱 키
-                    .header("appsecret", apiSecret)              // 앱 시크릿
+                    .header("authorization", "Bearer " + account.getAccessToken())  // 인증 토큰
+                    .header("appkey", account.getAppKey())                     // 앱 키
+                    .header("appsecret", account.getSecretKey())              // 앱 시크릿
                     .header("tr_id", "VTTC8434R")                 // 거래ID
                     .header("Content-Type", "application/json")    // 컨텐츠 타입
                     .GET()

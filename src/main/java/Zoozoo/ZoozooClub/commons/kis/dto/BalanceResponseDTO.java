@@ -12,11 +12,15 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BalanceResponseDTO {
 
-    private List<BalanceOutput> output1;  // 응답 데이터 리스트
+    private List<BalanceOutput1> output1;
+    private List<BalanceOutput2> output2;
+
+
+    // 응답 데이터 리스트
     @Getter
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)  // 추가
-    public static class BalanceOutput {
+    public static class BalanceOutput1 {
         /**
          * 종목코드
          */
@@ -65,7 +69,22 @@ public class BalanceResponseDTO {
         @JsonProperty("prpr")
         private String currentPrice;
 
+    }
 
+    @Getter
+    @Setter
+    @JsonIgnoreProperties(ignoreUnknown = true)  // 추가
+    public static class BalanceOutput2 {
+        /**
+         * 평가손익합계금액
+         */
+        @JsonProperty("evlu_pfls_smtl_amt")
+        private String evluPflsSmtlAmt;
 
+        /**
+         * 매입금액합계금액
+         */
+        @JsonProperty("pchs_amt_smtl_amt")
+        private String pchsAmtSmtlAmt;
     }
 }

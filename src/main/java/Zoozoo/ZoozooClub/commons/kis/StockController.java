@@ -1,5 +1,7 @@
 package Zoozoo.ZoozooClub.commons.kis;
 
+import Zoozoo.ZoozooClub.account.entity.Account;
+import Zoozoo.ZoozooClub.account.service.AccountService;
 import Zoozoo.ZoozooClub.commons.kis.dto.BalanceResponseDTO;
 import Zoozoo.ZoozooClub.commons.kis.dto.StockPriceResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StockController {
 
     private final Zoozoo.ZoozooClub.commons.kis.KoreaInvestmentApiService koreaInvestmentApiService;
+    private final AccountService accountService;
 
     @GetMapping("/clubs/{stockCode}/current")
     public ResponseEntity<StockPriceResponseDTO> getCurrentPrice(@PathVariable String stockCode) {
@@ -20,9 +23,11 @@ public class StockController {
         return ResponseEntity.ok(new StockPriceResponseDTO(stockCode, price));
     }
 
-    @GetMapping("/my-story/assets")
-    public ResponseEntity<BalanceResponseDTO> getStockBalance() {
-        BalanceResponseDTO balance = koreaInvestmentApiService.getStockBalance();
+    @GetMapping("/my-story/assets/{accountId}")
+    public ResponseEntity<BalanceResponseDTO> getStockBalance(@PathVariable Long accountId) {
+
+        Account account = accountService.getAccount(accountId);
+        BalanceResponseDTO balance = koreaInvestmentApiService.getStockBalance(account);
         return ResponseEntity.ok(balance);
     }
 }
