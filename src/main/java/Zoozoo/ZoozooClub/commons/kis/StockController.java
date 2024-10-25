@@ -1,9 +1,11 @@
 package Zoozoo.ZoozooClub.commons.kis;
 
 import Zoozoo.ZoozooClub.account.entity.Account;
-import Zoozoo.ZoozooClub.account.service.AccountService;
+import Zoozoo.ZoozooClub.commons.auth.LoginUserId;
 import Zoozoo.ZoozooClub.commons.kis.dto.BalanceResponseDTO;
 import Zoozoo.ZoozooClub.commons.kis.dto.StockPriceResponseDTO;
+import Zoozoo.ZoozooClub.user.entity.User;
+import Zoozoo.ZoozooClub.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StockController {
 
     private final Zoozoo.ZoozooClub.commons.kis.KoreaInvestmentApiService koreaInvestmentApiService;
-    private final AccountService accountService;
+    private final AuthService authService;
 
     @GetMapping("/clubs/{stockCode}/current")
     public ResponseEntity<StockPriceResponseDTO> getCurrentPrice(@PathVariable String stockCode) {
@@ -23,10 +25,10 @@ public class StockController {
         return ResponseEntity.ok(new StockPriceResponseDTO(stockCode, price));
     }
 
-    @GetMapping("/my-story/assets/{accountId}")
-    public ResponseEntity<BalanceResponseDTO> getStockBalance(@PathVariable Long accountId) {
-
-        Account account = accountService.getAccountById(accountId);
+    @GetMapping("/my-story/assets")
+    public ResponseEntity<BalanceResponseDTO> getStockBalance(@LoginUserId Long userId) {
+        User user = authService.getUserById(userId);
+        Account account = user.getAccount();
         BalanceResponseDTO balance = koreaInvestmentApiService.getStockBalance(account);
         return ResponseEntity.ok(balance);
     }

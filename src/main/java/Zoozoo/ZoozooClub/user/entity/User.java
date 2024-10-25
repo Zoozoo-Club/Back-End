@@ -1,5 +1,6 @@
 package Zoozoo.ZoozooClub.user.entity;
 
+import Zoozoo.ZoozooClub.account.entity.Account;
 import Zoozoo.ZoozooClub.club.entity.Club;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,4 +31,8 @@ public class User {
     @OneToOne
     @JoinColumn(name = "club_id")
     private Club club;
+
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
 }
