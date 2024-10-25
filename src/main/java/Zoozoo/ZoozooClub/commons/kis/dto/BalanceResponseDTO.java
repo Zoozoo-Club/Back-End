@@ -13,31 +13,59 @@ import java.util.List;
 public class BalanceResponseDTO {
 
     private List<BalanceOutput> output1;  // 응답 데이터 리스트
-
     @Getter
     @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)  // 추가
     public static class BalanceOutput {
+        /**
+         * 종목코드
+         */
         @JsonProperty("pdno")
-        private String stockCode;        // 종목코드
+        private String stockCode;
 
+        /**
+         * 종목명
+         */
         @JsonProperty("prdt_name")
-        private String stockName;        // 종목명
+        private String stockName;
 
+        /**
+         * 보유수량
+         */
         @JsonProperty("hldg_qty")
-        private String quantity;         // 보유수량
+        private String quantity;
 
-        @JsonProperty("pchs_avg_pric")
-        private String avgPrice;         // 매입평균가격
+        /**
+         * 평가금액
+         */
+        @JsonProperty("evlu_amt")
+        private String evluAmt;
 
-        @JsonProperty("prpr")
-        private String currentPrice;     // 현재가
-
+        /**
+         * 평가손익금액
+         */
         @JsonProperty("evlu_pfls_amt")
-        private String profitLoss;       // 평가손익금액
+        private String evluPflsAmt;
 
-        @JsonProperty("evlu_erng_rt")
-        private String profitLossRate;   // 수익률
+        /**
+         * 평가손익률
+         */
+        @JsonProperty("evlu_pfls_rt")
+        private String evluPflsRt;
+
+        /**
+         * 매입평균가격
+         */
+        @JsonProperty("pchs_avg_pric")
+        private String pchsAvgPric;
+
+        /**
+         * 현재가
+         */
+        @JsonProperty("prpr")
+        private String currentPrice;
+
+
 
     }
 }
