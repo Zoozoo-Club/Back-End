@@ -1,10 +1,12 @@
 package Zoozoo.ZoozooClub.user.service;
 
+import Zoozoo.ZoozooClub.account.entity.Account;
 import Zoozoo.ZoozooClub.user.dto.AuthLoginRequestDto;
 import Zoozoo.ZoozooClub.user.dto.AuthLoginResponseDto;
 import Zoozoo.ZoozooClub.user.entity.User;
 import Zoozoo.ZoozooClub.user.exception.NoUserException;
 import Zoozoo.ZoozooClub.user.exception.NotCorrectPasswordException;
+import Zoozoo.ZoozooClub.user.exception.NotFoundAccountException;
 import Zoozoo.ZoozooClub.user.repository.UserRepository;
 import Zoozoo.ZoozooClub.commons.auth.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -38,4 +40,9 @@ public class AuthService {
         return userRepository.findById(id).orElseThrow(NoUserException::new);
     }
 
+    public Account getAccountById(Long id){ return userRepository.findById(id).orElseThrow(NotFoundAccountException::new).getAccount(); }
+
+    public Account getAccountIdById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(NotFoundAccountException::new).getAccount();
+    }
 }
