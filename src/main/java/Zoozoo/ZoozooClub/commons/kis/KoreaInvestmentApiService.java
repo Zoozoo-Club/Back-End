@@ -4,6 +4,8 @@ package Zoozoo.ZoozooClub.commons.kis;
 import Zoozoo.ZoozooClub.account.entity.Account;
 import Zoozoo.ZoozooClub.commons.kis.dto.ApiResponseDTO;
 import Zoozoo.ZoozooClub.commons.kis.dto.BalanceResponseDTO;
+import Zoozoo.ZoozooClub.commons.kis.dto.OrderRequestDTO;
+import Zoozoo.ZoozooClub.commons.kis.dto.OrderResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -108,6 +111,49 @@ public class KoreaInvestmentApiService {
         } catch (Exception e) {
             log.error("Error getting stock balance: {}", e.getMessage());
             return null;
+        }
+    }
+
+    public OrderResponseDTO placeOrder(Account account, OrderRequestDTO orderRequest) {
+        try {
+            String url = String.format("%s/uapi/domestic-stock/v1/trading/order-cash", BASE_URL);
+
+            //시장가 주문(01)으로 고정, 수량 1주로 고정
+            String requestBody = objectMapper.writeValueAsString(Map.of(
+                    "CANO", account.getAcctNo(),           // 계좌번호
+                    "ACNT_PRDT_CD", "01",                  // 계좌상품코드
+                    "PDNO", orderRequest.getStockCode(),   // 종목코드
+                    "ORD_DVSN", "01",                      // 주문유형 (시장가 주문)
+                    "ORD_QTY", "1",                        // 주문수량 (1주 고정)
+                    "ORD_UNPR", "0",                       // 주문단가 (시장가이므로 0)
+                    "CTAC_TLNO", "",                       // 연락전화번호
+                    "SLL_BUY_DVSN", orderRequest.getOrderSide(), // 매매구분
+                    "ALGO_NO", ""                          // 알고리즘ID
+            ));
+
+            // TR_ID 설정 (매수/매도에 따라 다름)
+            String trId = orderRequest.getOrderSide().equals("01") ? "VTTC0802U" : "VTTC0801U";
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("authorization", "Bearer " + account.getAccessToken())
+                    .header("appkey", account.getAppKey())
+                    .header("appsecret", account.getSecretKey())
+                    .header("tr_id", trId)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+
+            return objectMapper.readValue(response.body(), OrderResponseDTO.class);
+        } catch (Exception e) {
+            log.error("Error placing order: {}", e.getMessage());
+            OrderResponseDTO errorResponse = new OrderResponseDTO();
+            errorResponse.setRtCd("-1");
+            errorResponse.setMsg("주문 처리 중 오류가 발생했습니다: " + e.getMessage());
+            return errorResponse;
         }
     }
 
