@@ -14,12 +14,14 @@ public class ProductDto {
     String name;
     String category;
     int risk;
+    String url;
 
     @Builder
-    public ProductDto(String name, String category, double profit, int risk){
+    public ProductDto(String name, String category, double profit, int risk, String url){
         this.name = name;
         this.category = category;
         this.profit = profit;
         this.risk = risk;
+        this.url = url;
     }
 }

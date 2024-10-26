@@ -1,9 +1,9 @@
 package Zoozoo.ZoozooClub.balance.service;
 
 import Zoozoo.ZoozooClub.account.entity.Account;
-import Zoozoo.ZoozooClub.account.service.AccountService;
 import Zoozoo.ZoozooClub.balance.exception.NotFoundBalanceException;
 import Zoozoo.ZoozooClub.commons.kis.dto.BalanceResponseDTO;
+import Zoozoo.ZoozooClub.user.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 @Service
 public class BalanceService {
     private final RedisTemplate<String, Object> redisTemplate;
-    private final AccountService accountService;
+    private final AuthService authService;
     @Autowired
-    public BalanceService(RedisTemplate<String, Object> redisTemplate, AccountService accountService) {
+    public BalanceService(RedisTemplate<String, Object> redisTemplate, AuthService authService) {
         this.redisTemplate = redisTemplate;
-        this.accountService = accountService;
+        this.authService = authService;
     }
 
     /**
@@ -102,7 +102,7 @@ public class BalanceService {
      */
     @SuppressWarnings("unchecked")
     public double getProfitByUserId(Long userId) {
-        Account account = accountService.getAccountById(userId);
+        Account account = authService.getAccountIdById(userId);
         String key = "balance:accounts:" + account.getId();
 
         Map<String, Object> balanceData = (Map<String, Object>) redisTemplate.opsForValue().get(key);
@@ -124,10 +124,14 @@ public class BalanceService {
         }
 
         double profitRate = (evaluationProfit / purchaseAmount) * 100;
-
         return Math.round(profitRate * 100.0) / 100.0;
     }
 
+    /**
+     * Long으로 변환
+     * @param value
+     * @return
+     */
     private double convertToDouble(Object value) {
         if (value instanceof Number) {
             return ((Number) value).doubleValue();
