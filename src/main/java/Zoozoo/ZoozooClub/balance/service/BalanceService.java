@@ -1,19 +1,24 @@
 package Zoozoo.ZoozooClub.balance.service;
 
+import Zoozoo.ZoozooClub.account.entity.Account;
+import Zoozoo.ZoozooClub.balance.exception.NotFoundBalanceException;
 import Zoozoo.ZoozooClub.commons.kis.dto.BalanceResponseDTO;
+import Zoozoo.ZoozooClub.user.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class BalanceService {
     private final RedisTemplate<String, Object> redisTemplate;
-
+    private final AuthService authService;
     @Autowired
-    public BalanceService(RedisTemplate<String, Object> redisTemplate) {
+    public BalanceService(RedisTemplate<String, Object> redisTemplate, AuthService authService) {
         this.redisTemplate = redisTemplate;
+        this.authService = authService;
     }
 
     /**
@@ -90,5 +95,49 @@ public class BalanceService {
         redisTemplate.opsForSet().remove("balance:account:ids", accountId);
     }
 
+    /**
+     * userId 기준 수익률 조회
+     * @param userId
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public double getProfitByUserId(Long userId) {
+        Account account = authService.getAccountIdById(userId);
+        String key = "balance:accounts:" + account.getId();
 
+        Map<String, Object> balanceData = (Map<String, Object>) redisTemplate.opsForValue().get(key);
+        if (balanceData == null) {
+            throw new NotFoundBalanceException();
+        }
+
+        Map<String, Object> output2 = (Map<String, Object>) balanceData.get("output2");
+        if (output2 == null || !output2.containsKey("evluPflsSmtlAmt") || !output2.containsKey("pchsAmtSmtlAmt")) {
+            throw new NotFoundBalanceException();
+        }
+
+        // 평가손익금액과 매입금액 추출
+        double evaluationProfit = convertToDouble(output2.get("evluPflsSmtlAmt")); // 평가손익금액
+        double purchaseAmount = convertToDouble(output2.get("pchsAmtSmtlAmt")); // 매입금액
+
+        if (purchaseAmount == 0) {
+            return 0.0;
+        }
+
+        double profitRate = (evaluationProfit / purchaseAmount) * 100;
+        return Math.round(profitRate * 100.0) / 100.0;
+    }
+
+    /**
+     * Long으로 변환
+     * @param value
+     * @return
+     */
+    private double convertToDouble(Object value) {
+        if (value instanceof Number) {
+            return ((Number) value).doubleValue();
+        } else if (value instanceof String) {
+            return Double.parseDouble((String) value);
+        }
+        throw new IllegalStateException("잘못된 데이터 형식입니다.");
+    }
 }
