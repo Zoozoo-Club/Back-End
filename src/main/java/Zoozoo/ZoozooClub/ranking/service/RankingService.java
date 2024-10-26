@@ -3,8 +3,12 @@ package Zoozoo.ZoozooClub.ranking.service;
 import Zoozoo.ZoozooClub.account.entity.Account;
 import Zoozoo.ZoozooClub.account.service.AccountService;
 import Zoozoo.ZoozooClub.balance.service.BalanceService;
+import Zoozoo.ZoozooClub.club.entity.Club;
 import Zoozoo.ZoozooClub.commons.kis.KoreaInvestmentApiService;
 import Zoozoo.ZoozooClub.commons.kis.dto.BalanceResponseDTO;
+import Zoozoo.ZoozooClub.ranking.entity.*;
+import Zoozoo.ZoozooClub.user.entity.User;
+import Zoozoo.ZoozooClub.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,7 @@ public class RankingService {
     private final AccountService accountService;
     private final KoreaInvestmentApiService koreaInvestmentApiService;
     private final BalanceService balanceService;
+    private final AuthService authService;
 
     /**
      * accountId 기준 단일 계좌 정보 업데이트
@@ -70,10 +75,6 @@ public class RankingService {
                 }else{
                     System.out.println("balances are error.");
                 }
-            }
-
-            if(accountIdLong % 2 == 0){
-                balanceService.deleteBalance(accountIdLong);
             }
 
             List<Map<String, Object>> allBalances = balanceService.getAllBalances();
@@ -181,5 +182,40 @@ public class RankingService {
         analysis.put("totalProfitLoss", output2.get("evluPflsSmtlAmt"));
 
         return analysis;
+    }
+
+    @Scheduled(fixedRate = 3700000, initialDelay = 5000)
+    public void updateRanking() {
+        List<User> users = authService.getAllUser();
+        Map<Long, Ranking> rankings = new HashMap<>();
+        Map<Long, List<Map<String, Object>>> allBalance = balanceService.getAllKeyAndBalances();
+
+        for(User user : users) {
+            Map<String, Object> balances = allBalance.get(user.getAccount().getId()).get(0);
+            Club club = user.getClub();
+            Map<String, Object> output2 = (Map<String, Object>) balances.get("output2");
+
+            Long total = Long.parseLong((String) output2.get("pchsAmtSmtlAmt"));
+            Long profit = Long.parseLong((String)output2.get("evluPflsSmtlAmt"));
+
+
+            Long clubId = club.getId();
+            String clubName = club.getCompany().getName();
+            String code = club.getCompany().getStocks().get(0).getCode();
+            Ranking ranking = rankings.getOrDefault(clubId, Ranking.builder()
+                    .clubId(clubId)
+                    .clubName(clubName)
+                    .profitValue(0L)
+                    .totalAmount(0L)
+                    .userCount(0L)
+                    .code(code)
+                    .build());
+            ranking.addUserCount();
+            ranking.addTotalAmount(total);
+            ranking.addProfitValue(profit);
+            rankings.put(clubId, ranking);
+        }
+
+        balanceService.saveRanking(rankings.values().stream().toList());
     }
 }

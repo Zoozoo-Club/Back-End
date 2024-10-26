@@ -10,6 +10,8 @@ import Zoozoo.ZoozooClub.commons.auth.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -36,6 +38,10 @@ public class AuthService {
 
     public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(NoUserException::new);
+    }
+
+    public List<User> getAllUser() {
+        return userRepository.findAll();
     }
 
 }

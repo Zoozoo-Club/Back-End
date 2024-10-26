@@ -1,6 +1,7 @@
 package Zoozoo.ZoozooClub.club.service;
 
 import Zoozoo.ZoozooClub.club.dto.ClubResponseDto;
+import Zoozoo.ZoozooClub.club.entity.Club;
 import Zoozoo.ZoozooClub.club.exception.NoClubException;
 import Zoozoo.ZoozooClub.club.repository.ClubRepository;
 import Zoozoo.ZoozooClub.company.entity.Company;
@@ -25,7 +26,6 @@ public class ClubService {
 
 
         // todo Redis에서 Account 정보 조회해서 Club에 속한 유저의 포트폴리오를 다 더해서 클럽 포트폴리오를 만드는 로직이 필요함.
-
         return ClubResponseDto.builder().companyInfo(ClubResponseDto.CompanyInfo.builder()
                 .companyId(company.getId())
                 .companyName(company.getName())
@@ -35,6 +35,10 @@ public class ClubService {
                 .clubPortfolio(
                         null
                 ).build();
+    }
+
+    public List<Club> getAllClubs() {
+        return clubRepository.findAll();
     }
 
 }

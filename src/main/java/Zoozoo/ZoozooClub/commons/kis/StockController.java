@@ -32,4 +32,5 @@ public class StockController {
         BalanceResponseDTO balance = koreaInvestmentApiService.getStockBalance(account);
         return ResponseEntity.ok(balance);
     }
+    
 }
