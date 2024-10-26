@@ -45,9 +45,12 @@ public class ProductService {
                             .name(product.getName())
                             .profit(product.getProfit())
                             .risk(product.getRisk())
+                            .url(product.getUrl())
                             .build());
         }
 
         return higerProducts;
     }
+
+
 }

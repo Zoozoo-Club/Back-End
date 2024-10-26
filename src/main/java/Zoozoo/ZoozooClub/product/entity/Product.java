@@ -27,4 +27,6 @@ public class Product {
     private String category;
 
     private int risk;
+
+    private String url;
 }
