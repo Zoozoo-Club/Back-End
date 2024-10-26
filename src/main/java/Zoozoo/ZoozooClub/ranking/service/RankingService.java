@@ -72,10 +72,6 @@ public class RankingService {
                 }
             }
 
-            if(accountIdLong % 2 == 0){
-                balanceService.deleteBalance(accountIdLong);
-            }
-
             List<Map<String, Object>> allBalances = balanceService.getAllBalances();
             System.out.println(allBalances);
 
