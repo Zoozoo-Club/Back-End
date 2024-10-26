@@ -33,12 +33,13 @@ public class StockController {
         return ResponseEntity.ok(balance);
     }
 
-    @PostMapping("/my-story/order/{accountId}")
+    @PostMapping("/my-story/order")
     public ResponseEntity<OrderResponseDTO> placeOrder(
-            @PathVariable Long accountId,
+            @LoginUserId Long userId,
             @RequestBody OrderRequestDTO orderRequest) {
 
-        Account account = accountService.getAccount(accountId);
+        User user = authService.getUserById(userId);
+        Account account = user.getAccount();
         OrderResponseDTO response = koreaInvestmentApiService.placeOrder(account, orderRequest);
         return ResponseEntity.ok(response);
     }
