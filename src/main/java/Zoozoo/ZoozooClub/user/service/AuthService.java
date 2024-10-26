@@ -1,6 +1,8 @@
 package Zoozoo.ZoozooClub.user.service;
 
 import Zoozoo.ZoozooClub.account.entity.Account;
+import Zoozoo.ZoozooClub.club.entity.Club;
+import Zoozoo.ZoozooClub.club.exception.NoClubException;
 import Zoozoo.ZoozooClub.user.dto.AuthLoginRequestDto;
 import Zoozoo.ZoozooClub.user.dto.AuthLoginResponseDto;
 import Zoozoo.ZoozooClub.user.entity.User;
@@ -44,5 +46,9 @@ public class AuthService {
 
     public Account getAccountIdById(Long userId) {
         return userRepository.findById(userId).orElseThrow(NotFoundAccountException::new).getAccount();
+    }
+
+    public Club getClubById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(NoClubException::new).getClub();
     }
 }

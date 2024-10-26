@@ -18,14 +18,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-    @GetMapping("/higher-profit")
+    @GetMapping("/higher-than-profit/user")
     @SecurityRequirement(name="JWT")
     @Operation(summary = "test API")
     public ResponseEntity<List<ProductDto>> getHigherProductsThanUserProfit(@LoginUserId Long userId) {
         return ResponseEntity.ok().body(productService.getHigherProductsThanUserProfit(userId));
     }
+
     @GetMapping
     public ResponseEntity<List<ProductDto>> getAllProducts(){
         return ResponseEntity.ok().body(productService.getAllProducts());
+    }
+
+    @GetMapping("/higher-than-profit/club")
+    @SecurityRequirement(name="JWT")
+    @Operation(summary = "test API")
+    public ResponseEntity<List<ProductDto>> getHigherProductsThanClubProfit(@LoginUserId Long userId){
+        return ResponseEntity.ok().body(productService.getHigherProductsThanClubProfit(userId));
     }
 }
