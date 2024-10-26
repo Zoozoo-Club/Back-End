@@ -25,7 +25,7 @@ public class FollowerController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{targetUserId}")
+    @DeleteMapping("/unfollows/{targetUserId}")
     public ResponseEntity<Void> unfollowUser(
             @LoginUserId Long userId,
             @PathVariable Long targetUserId) {
