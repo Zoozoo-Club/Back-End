@@ -7,6 +7,7 @@ import Zoozoo.ZoozooClub.club.repository.ClubRepository;
 import Zoozoo.ZoozooClub.company.entity.Company;
 import Zoozoo.ZoozooClub.company.exception.NoStockException;
 import Zoozoo.ZoozooClub.stock.entity.Stock;
+import Zoozoo.ZoozooClub.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClubService {
     private final ClubRepository clubRepository;
-
+    private final AuthService authService;
     public ClubResponseDto getClubInfo(Long id) {
         Company company = clubRepository.findById(id).orElseThrow(NoClubException::new).getCompany();
         List<Stock> stocks = company.getStocks();
@@ -41,4 +42,10 @@ public class ClubService {
         return clubRepository.findAll();
     }
 
+    public double getProfitByUserId(Long userId) {
+        Club club = authService.getClubById(userId);
+        double profit = 0;
+        // TODO: club에 해당하는 수익률을 리턴!
+        return profit;
+    }
 }
