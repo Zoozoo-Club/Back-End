@@ -6,6 +6,8 @@ import Zoozoo.ZoozooClub.commons.kis.dto.BalanceResponseDTO;
 import Zoozoo.ZoozooClub.commons.kis.dto.OrderRequestDTO;
 import Zoozoo.ZoozooClub.commons.kis.dto.OrderResponseDTO;
 import Zoozoo.ZoozooClub.commons.kis.dto.StockPriceResponseDTO;
+import Zoozoo.ZoozooClub.stock.entity.Stock;
+import Zoozoo.ZoozooClub.stock.repository.StockRepository;
 import Zoozoo.ZoozooClub.user.entity.User;
 import Zoozoo.ZoozooClub.user.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,11 +22,13 @@ public class StockController {
 
     private final Zoozoo.ZoozooClub.commons.kis.KoreaInvestmentApiService koreaInvestmentApiService;
     private final AuthService authService;
-
+    private final StockRepository stockRepository;
     @GetMapping("/stocks/{stockCode}/current")
     public ResponseEntity<StockPriceResponseDTO> getCurrentPrice(@PathVariable String stockCode) {
+
+        Stock stock = stockRepository.findByCode(stockCode);
         Long price = koreaInvestmentApiService.getCurrentPrice(stockCode);
-        return ResponseEntity.ok(new StockPriceResponseDTO(stockCode, price));
+        return ResponseEntity.ok(new StockPriceResponseDTO(stockCode, stock.getName(), price));
     }
 
     @GetMapping("/my-story/assets")
