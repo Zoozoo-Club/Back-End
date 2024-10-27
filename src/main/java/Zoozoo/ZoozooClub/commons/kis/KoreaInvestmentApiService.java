@@ -45,7 +45,7 @@ public class KoreaInvestmentApiService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public Long getCurrentPrice(String stockCode) {
+    public Long getCurrentPrice(String stockCode , Account account) {
         try {
             String url = String.format("%s/uapi/domestic-stock/v1/quotations/inquire-time-itemconclusion" +
                             "?FID_COND_MRKT_DIV_CODE=J&FID_INPUT_ISCD=%s&FID_INPUT_HOUR_1=160000",
@@ -53,9 +53,9 @@ public class KoreaInvestmentApiService {
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
-                    .header("authorization", "Bearer " + token)  // 실제 토큰으로 교체 필요
-                    .header("appkey", apiKey)
-                    .header("appsecret", apiSecret)
+                    .header("authorization", "Bearer " + account.getAccessToken())  // 실제 토큰으로 교체 필요
+                    .header("appkey", account.getAppKey())
+                    .header("appsecret", account.getSecretKey())
                     .header("tr_id", "FHPST01060000")
                     .header("Content-Type", "application/json")
                     .GET()
