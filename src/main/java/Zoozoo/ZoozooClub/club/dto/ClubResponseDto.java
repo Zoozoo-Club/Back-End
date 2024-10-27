@@ -1,10 +1,9 @@
 package Zoozoo.ZoozooClub.club.dto;
 
 
-import Zoozoo.ZoozooClub.company.entity.Company;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -31,14 +30,19 @@ public class ClubResponseDto {
         private final long totalInvestmentAmount;
         private final List<StockHoldings> stockHoldings;
 
-        @RequiredArgsConstructor
         @Getter
-        static class StockHoldings {
-            private final String stockCode;
-            private final String stockName;
-            private final Double holdingRatio;
-            private final Double roi;
-            private final Integer holdingMembers;
+        @Builder
+        public static class StockHoldings {
+            private String stockCode;
+            private String stockName;
+            // 갖고 있는 비율
+            @Setter
+            private Double holdingRatio;
+            // 수익률
+            @Setter
+            private Double roi;
+            @Setter
+            private Integer holdingMembers;
         }
     }
 }
