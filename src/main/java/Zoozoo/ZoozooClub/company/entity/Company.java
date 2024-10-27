@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
 
 import java.sql.Date;
 import java.util.List;
@@ -30,7 +31,7 @@ public class Company {
     private String homepage;
     private String description;
 
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
     @JsonIgnoreProperties("company")
     private List<Stock> stocks;
 
