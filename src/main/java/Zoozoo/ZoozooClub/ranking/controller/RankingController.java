@@ -44,7 +44,6 @@ public class RankingController {
 
 
         for(User user : users) {
-
             if(!Objects.equals(user.getClub().getId(), clubId)) continue;
             Map<String, Object> balances = allBalance.get(user.getAccount().getId()).get(0);
             Map<String, Object> output2 = (Map<String, Object>) balances.get("output2");
@@ -91,6 +90,7 @@ public class RankingController {
                     .roi(((double) ranking.getProfitValue() / ranking.getTotalAmount()) * 100)
                     .totalAmount(ranking.getTotalAmount())
                     .userCount(ranking.getUserCount())
+                    .code(ranking.getCode())
                     .build());
         }
 
