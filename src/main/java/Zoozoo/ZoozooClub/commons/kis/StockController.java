@@ -3,6 +3,12 @@ package Zoozoo.ZoozooClub.commons.kis;
 import Zoozoo.ZoozooClub.account.entity.Account;
 import Zoozoo.ZoozooClub.balance.service.BalanceService;
 import Zoozoo.ZoozooClub.commons.auth.LoginUserId;
+import Zoozoo.ZoozooClub.commons.kis.dto.BalanceResponseDTO;
+import Zoozoo.ZoozooClub.commons.kis.dto.OrderRequestDTO;
+import Zoozoo.ZoozooClub.commons.kis.dto.OrderResponseDTO;
+import Zoozoo.ZoozooClub.commons.kis.dto.StockPriceResponseDTO;
+import Zoozoo.ZoozooClub.stock.entity.Stock;
+import Zoozoo.ZoozooClub.stock.repository.StockRepository;
 import Zoozoo.ZoozooClub.commons.kis.dto.*;
 import Zoozoo.ZoozooClub.user.entity.User;
 import Zoozoo.ZoozooClub.user.service.AuthService;
@@ -23,21 +29,21 @@ public class StockController {
     private final KoreaInvestmentApiService koreaInvestmentApiService;
     private final AuthService authService;
     private final BalanceService balanceService;
-
-
+    private final StockRepository stockRepository;
     @GetMapping("/stocks/{stockCode}/current")
     @SecurityRequirement(name="JWT")
     @Operation(summary = "assets API")
-    public ResponseEntity<StockPriceResponseDTO> getCurrentPrice(@PathVariable String stockCode,@LoginUserId Long userId) {
+    public ResponseEntity<StockPriceResponseDTO> getCurrentPrice(@PathVariable String stockCode) {
         User user = authService.getUserById(userId);
         Account account = user.getAccount();
         Long price = koreaInvestmentApiService.getCurrentPrice(stockCode,account);
-        return ResponseEntity.ok(new StockPriceResponseDTO(stockCode, price));
+        Stock stock = stockRepository.findByCode(stockCode);
+        return ResponseEntity.ok(new StockPriceResponseDTO(stockCode, stock.getName(), price));
     }
 
     @GetMapping("/my-story/assets")
     @SecurityRequirement(name="JWT")
-    @Operation(summary = "assets API")
+    @Operation(summary = "test API")
     public ResponseEntity<BalanceResponseDTO> getStockBalance(@LoginUserId Long userId) {
         User user = authService.getUserById(userId);
         Account account = user.getAccount();
@@ -78,7 +84,7 @@ public class StockController {
 
     @PostMapping("/my-story/order")
     @SecurityRequirement(name="JWT")
-    @Operation(summary = "order API")
+    @Operation(summary = "test API")
     public ResponseEntity<OrderResponseDTO> placeOrder(
             @LoginUserId Long userId,
             @RequestBody OrderRequestDTO orderRequest) {

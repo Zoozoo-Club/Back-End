@@ -122,8 +122,9 @@ public class ClubService {
 
         Company company = club.getCompany();
         Stock stock = stockService.getStockByCompanyId(company.getId());
-        double price =  koreaInvestmentApiService.getCurrentPrice(stock.getCode(),account);
-        return new StockPriceResponseDTO(stock.getCode(), (long) price);
+
+        double price =  koreaInvestmentApiService.getCurrentPrice(stock.getCode());
+        return new StockPriceResponseDTO(stock.getCode(), stock.getName(), (long)price);
     }
 
     @Getter

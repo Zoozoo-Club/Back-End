@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StockPriceResponseDTO {
     private String stockCode;
+    private String name;
     private Long currentPrice;
 }
