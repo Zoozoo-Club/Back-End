@@ -25,9 +25,13 @@ public class StockController {
     private final BalanceService balanceService;
 
 
-    @GetMapping("/clubs/{stockCode}/current")
-    public ResponseEntity<StockPriceResponseDTO> getCurrentPrice(@PathVariable String stockCode) {
-        Long price = koreaInvestmentApiService.getCurrentPrice(stockCode);
+    @GetMapping("/stocks/{stockCode}/current")
+    @SecurityRequirement(name="JWT")
+    @Operation(summary = "assets API")
+    public ResponseEntity<StockPriceResponseDTO> getCurrentPrice(@PathVariable String stockCode,@LoginUserId Long userId) {
+        User user = authService.getUserById(userId);
+        Account account = user.getAccount();
+        Long price = koreaInvestmentApiService.getCurrentPrice(stockCode,account);
         return ResponseEntity.ok(new StockPriceResponseDTO(stockCode, price));
     }
 

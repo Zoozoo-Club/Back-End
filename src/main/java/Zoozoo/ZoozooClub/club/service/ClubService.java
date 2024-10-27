@@ -1,6 +1,7 @@
 package Zoozoo.ZoozooClub.club.service;
 
 import Zoozoo.ZoozooClub.balance.service.BalanceService;
+import Zoozoo.ZoozooClub.account.entity.Account;
 import Zoozoo.ZoozooClub.club.dto.ClubResponseDto;
 import Zoozoo.ZoozooClub.club.dto.ClubResponseDto.ClubPortfolio.StockHoldings;
 import Zoozoo.ZoozooClub.club.entity.Club;
@@ -115,13 +116,13 @@ public class ClubService {
         return profit;
     }
 
-    public StockPriceResponseDTO getClubCurrentPriceById(Long clubId){
+    public StockPriceResponseDTO getClubCurrentPriceById(Long clubId, Account account){
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new EntityNotFoundException("Club not found with id: " + clubId));
 
         Company company = club.getCompany();
         Stock stock = stockService.getStockByCompanyId(company.getId());
-        double price =  koreaInvestmentApiService.getCurrentPrice(stock.getCode());
+        double price =  koreaInvestmentApiService.getCurrentPrice(stock.getCode(),account);
         return new StockPriceResponseDTO(stock.getCode(), (long) price);
     }
 

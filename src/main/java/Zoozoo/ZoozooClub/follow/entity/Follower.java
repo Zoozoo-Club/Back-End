@@ -11,6 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "follower",
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = {"follower_id", "following_id"}
+        ))
 public class Follower {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
