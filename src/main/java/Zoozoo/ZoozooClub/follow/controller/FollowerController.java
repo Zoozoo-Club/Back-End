@@ -3,7 +3,8 @@ package Zoozoo.ZoozooClub.follow.controller;
 import Zoozoo.ZoozooClub.commons.auth.LoginUserId;
 import Zoozoo.ZoozooClub.follow.dto.FollowResponseDTO;
 import Zoozoo.ZoozooClub.follow.service.FollowerService;
-import Zoozoo.ZoozooClub.user.entity.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,8 @@ public class FollowerController {
     private final FollowerService followerService;
 
     @PostMapping("/{targetUserId}")
+    @SecurityRequirement(name="JWT")
+    @Operation(summary = "test API")
     public ResponseEntity<Void> followUser(
             @LoginUserId Long userId,
             @PathVariable Long targetUserId) {
@@ -26,6 +29,8 @@ public class FollowerController {
     }
 
     @DeleteMapping("/unfollows/{targetUserId}")
+    @SecurityRequirement(name="JWT")
+    @Operation(summary = "test API")
     public ResponseEntity<Void> unfollowUser(
             @LoginUserId Long userId,
             @PathVariable Long targetUserId) {
@@ -34,12 +39,16 @@ public class FollowerController {
     }
 
     @GetMapping("/followers")
+    @SecurityRequirement(name="JWT")
+    @Operation(summary = "test API")
     public ResponseEntity<List<FollowResponseDTO>> getMyFollowers(@LoginUserId Long userId) {
         List<FollowResponseDTO> followers = followerService.getFollowers(userId);
         return ResponseEntity.ok(followers);
     }
 
     @GetMapping("/following")
+    @SecurityRequirement(name="JWT")
+    @Operation(summary = "test API")
     public ResponseEntity<List<FollowResponseDTO>> getMyFollowing(@LoginUserId Long userId) {
         List<FollowResponseDTO> following = followerService.getFollowing(userId);
         return ResponseEntity.ok(following);
@@ -58,6 +67,8 @@ public class FollowerController {
     }
 
     @GetMapping("/{targetUserId}/status")
+    @SecurityRequirement(name="JWT")
+    @Operation(summary = "test API")
     public ResponseEntity<Boolean> getFollowStatus(
             @LoginUserId Long userId,
             @PathVariable Long targetUserId) {
