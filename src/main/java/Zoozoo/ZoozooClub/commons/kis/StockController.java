@@ -29,7 +29,7 @@ public class StockController {
 
     @GetMapping("/my-story/assets")
     @SecurityRequirement(name="JWT")
-    @Operation(summary = "assets API")
+    @Operation(summary = "test API")
     public ResponseEntity<BalanceResponseDTO> getStockBalance(@LoginUserId Long userId) {
         User user = authService.getUserById(userId);
         Account account = user.getAccount();
@@ -39,7 +39,7 @@ public class StockController {
 
     @PostMapping("/my-story/order")
     @SecurityRequirement(name="JWT")
-    @Operation(summary = "order API")
+    @Operation(summary = "test API")
     public ResponseEntity<OrderResponseDTO> placeOrder(
             @LoginUserId Long userId,
             @RequestBody OrderRequestDTO orderRequest) {
