@@ -28,7 +28,7 @@ public class User {
     private Boolean publicPersonalInfo;
 
     // FK 추가
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "club_id")
     private Club club;
 

@@ -43,7 +43,7 @@ public class ProductService {
     }
 
 
-    public List<ProductDto>  getHigherProductsThanClubProfit(Long userId) {
+    public List<ProductDto> getHigherProductsThanClubProfit(Long userId) {
         double profit = clubService.getProfitByUserId(userId);
         return getHigherProductsThanProfit(profit);
     }

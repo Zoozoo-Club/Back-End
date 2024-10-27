@@ -28,7 +28,6 @@ public class AuthService {
         String password = authLoginRequestDto.getPassword();
         User user = userRepository.findUserByUserId(userId).orElseThrow(NoUserException::new);
 
-        //todo password 검토
         if(user.getPassword().equals(password)) {
             if(user.getClub() == null) {
                 return new AuthLoginResponseDto(jwtUtil.createToken(user.getId(), null), user.getNickname());

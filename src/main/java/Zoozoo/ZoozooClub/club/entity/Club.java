@@ -1,14 +1,18 @@
 package Zoozoo.ZoozooClub.club.entity;
 
 import Zoozoo.ZoozooClub.company.entity.Company;
+import Zoozoo.ZoozooClub.stock.entity.Stock;
+import Zoozoo.ZoozooClub.user.entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 
-// todo 외래키 때문에 임시로 Entity만 만들어두었음.
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -24,4 +28,7 @@ public class Club {
     @JoinColumn(name = "company_id")
     private Company company;
 
+    @OneToMany(mappedBy = "club", fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("club")
+    private List<User> users;
 }

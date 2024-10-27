@@ -12,4 +12,5 @@ public class RankingDto {
     private Long profitValue;
     private Long totalAmount;
     private Long userCount;
+    private String code;
 }
