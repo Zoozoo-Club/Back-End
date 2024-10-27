@@ -2,11 +2,14 @@ package Zoozoo.ZoozooClub.club.controller;
 
 import Zoozoo.ZoozooClub.account.entity.Account;
 import Zoozoo.ZoozooClub.club.dto.ClubResponseDto;
+import Zoozoo.ZoozooClub.club.dto.MyClubResponseDto;
+import Zoozoo.ZoozooClub.club.entity.Club;
 import Zoozoo.ZoozooClub.club.service.ClubService;
 import Zoozoo.ZoozooClub.commons.auth.LoginUserId;
 import Zoozoo.ZoozooClub.commons.kis.dto.StockPriceResponseDTO;
 import Zoozoo.ZoozooClub.user.entity.User;
 import Zoozoo.ZoozooClub.user.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +32,19 @@ public class ClubController {
 
     }
 
-    @SecurityRequirement(name="JWT")
+    @GetMapping("/my-club")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary =  "내 클럽 가져오기 API")
+    public ResponseEntity<MyClubResponseDto> getMyClub(@LoginUserId Long userId) {
+        Club club = authService.getClubById(userId);
+        return ResponseEntity.ok().body(MyClubResponseDto.builder()
+                .clubId(club.getId())
+                .clubName(club.getCompany().getName()).build());
+    }
+
     @GetMapping("/{clubId}/current")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "현재 클럽의 주식 가격 가져오는 API")
     public ResponseEntity<StockPriceResponseDTO> getClubCurrentPrice(@PathVariable Long clubId , @LoginUserId Long userId) {
         User user = authService.getUserById(userId);
         Account account = user.getAccount();
