@@ -4,10 +4,14 @@ import Zoozoo.ZoozooClub.club.dto.ClubResponseDto;
 import Zoozoo.ZoozooClub.club.entity.Club;
 import Zoozoo.ZoozooClub.club.exception.NoClubException;
 import Zoozoo.ZoozooClub.club.repository.ClubRepository;
+import Zoozoo.ZoozooClub.commons.kis.KoreaInvestmentApiService;
+import Zoozoo.ZoozooClub.commons.kis.dto.StockPriceResponseDTO;
 import Zoozoo.ZoozooClub.company.entity.Company;
 import Zoozoo.ZoozooClub.company.exception.NoStockException;
 import Zoozoo.ZoozooClub.stock.entity.Stock;
+import Zoozoo.ZoozooClub.stock.service.StockService;
 import Zoozoo.ZoozooClub.user.service.AuthService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +22,8 @@ import java.util.List;
 public class ClubService {
     private final ClubRepository clubRepository;
     private final AuthService authService;
+    private final StockService stockService;
+    private final KoreaInvestmentApiService koreaInvestmentApiService;
     public ClubResponseDto getClubInfo(Long id) {
         Company company = clubRepository.findById(id).orElseThrow(NoClubException::new).getCompany();
         List<Stock> stocks = company.getStocks();
@@ -48,4 +54,16 @@ public class ClubService {
         // TODO: club에 해당하는 수익률을 리턴!
         return profit;
     }
+
+    public StockPriceResponseDTO getClubCurrentPriceById(Long clubId){
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new EntityNotFoundException("Club not found with id: " + clubId));
+
+        Company company = club.getCompany();
+        Stock stock = stockService.getStockByCompanyId(company.getId());
+        double price =  koreaInvestmentApiService.getCurrentPrice(stock.getCode());
+        return new StockPriceResponseDTO(stock.getCode(), (long) price);
+    }
+
+
 }

@@ -1,10 +1,8 @@
 package Zoozoo.ZoozooClub.club.controller;
 
 import Zoozoo.ZoozooClub.club.dto.ClubResponseDto;
-import Zoozoo.ZoozooClub.club.entity.Club;
 import Zoozoo.ZoozooClub.club.service.ClubService;
-import Zoozoo.ZoozooClub.company.service.CompanyService;
-import lombok.Getter;
+import Zoozoo.ZoozooClub.commons.kis.dto.StockPriceResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +18,14 @@ public class ClubController {
     private final ClubService clubService;
 
     @GetMapping("/{clubId}/info")
-    public ResponseEntity<ClubResponseDto> getClubInfo(@PathVariable String clubId) {
-        return ResponseEntity.ok().body(clubService.getClubInfo(Long.parseLong(clubId)));
+    public ResponseEntity<ClubResponseDto> getClubInfo(@PathVariable Long clubId) {
+        return ResponseEntity.ok().body(clubService.getClubInfo(clubId));
+
+    }
+
+    @GetMapping("/{clubId}/current")
+    public ResponseEntity<StockPriceResponseDTO> getClubCurrentPrice(@PathVariable Long clubId) {
+        return ResponseEntity.ok().body(clubService.getClubCurrentPriceById(clubId));
 
     }
 }
