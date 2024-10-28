@@ -3,7 +3,6 @@ package Zoozoo.ZoozooClub.commons.kis;
 import Zoozoo.ZoozooClub.account.entity.Account;
 import Zoozoo.ZoozooClub.balance.service.BalanceService;
 import Zoozoo.ZoozooClub.commons.auth.LoginUserId;
-import Zoozoo.ZoozooClub.commons.kis.dto.BalanceResponseDTO;
 import Zoozoo.ZoozooClub.commons.kis.dto.OrderRequestDTO;
 import Zoozoo.ZoozooClub.commons.kis.dto.OrderResponseDTO;
 import Zoozoo.ZoozooClub.commons.kis.dto.StockPriceResponseDTO;
@@ -43,23 +42,56 @@ public class StockController {
 
     @GetMapping("/my-story/assets")
     @SecurityRequirement(name="JWT")
-    @Operation(summary = "test API")
-    public ResponseEntity<BalanceResponseDTO> getStockBalance(@LoginUserId Long userId) {
+    @Operation(summary = "현재 내 자산 조회 API")
+    public ResponseEntity<BalanceMyAssetResponseDto> getStockBalance(@LoginUserId Long userId) {
+
         User user = authService.getUserById(userId);
         Account account = user.getAccount();
-        BalanceResponseDTO balance = koreaInvestmentApiService.getStockBalance(account);
-        return ResponseEntity.ok(balance);
+        Map<String, Object> map = balanceService.getBalancesByAccountId(account.getId());
+        List<Map<String, Object>> output1s = (List<Map<String, Object>>) map.get("output1");
+        Map<String, Object> output2 = (Map<String, Object>) map.get("output2");
+
+        Long allAsset = Long.parseLong( (String) output2.get("pchsAmtSmtlAmt"));
+        Long evluAsset = Long.parseLong( (String) output2.get("evluPflsSmtlAmt"));
+
+        List<BalanceMyAssetResponseDto.MyAssetOutput1> myAsset1 = new ArrayList<>();
+        List<BalanceMyAssetResponseDto.MyAssetOutput2> myAsset2 = new ArrayList<>();
+        myAsset2.add(BalanceMyAssetResponseDto.MyAssetOutput2.builder()
+                .pchsAmtSmtlAmt(String.valueOf(allAsset))
+                .evluPflsSmtlAmt(String.valueOf(evluAsset))
+                        .roi(((double) evluAsset / allAsset) * 100)
+                .build());
+        for(Map<String, Object> output1 : output1s) {
+            BalanceMyAssetResponseDto.MyAssetOutput1 myAsset = BalanceMyAssetResponseDto.MyAssetOutput1.builder()
+                    .stockCode((String) output1.get("stockCode"))
+                    .stockName((String) output1.get("stockName"))
+                    .evluAmt((String) output1.get("evluAmt"))
+                    .evluPflsRt((String) output1.get("evluPflsRt"))
+                    .pchsAvgPric((String) output1.get("pchsAvgPric"))
+                    .evluPflsAmt((String) output1.get("evluPflsAmt"))
+                    .currentPrice((String) output1.get("currentPrice"))
+                    .quantity((String) output1.get("quantity"))
+                    .holdingRatio(String.valueOf(((double) (Long.parseLong((String) output1.get("evluAmt"))) / allAsset) * 100))
+                    .build();
+            myAsset1.add(myAsset);
+        }
+
+        return ResponseEntity.ok(BalanceMyAssetResponseDto.builder()
+                        .output1(myAsset1)
+                        .output2(myAsset2)
+                .build());
     }
 
     @GetMapping("/my-story/assets/{userId}")
     public ResponseEntity<OtherStockBalanceDto> getOtherStockBalance(@PathVariable("userId") Long userId) {
         User user = authService.getUserById(userId);
         Account account = user.getAccount();
-        OtherStockBalanceDto otherStockBalanceDto = null;
-        BalanceResponseDTO balance = koreaInvestmentApiService.getStockBalance(account);
+        OtherStockBalanceDto otherStockBalanceDto;
+        Map<String, Object> map = balanceService.getBalancesByAccountId(account.getId());
+        Map<String, Object> output2 = (Map<String, Object>) map.get("output2");
 
-        for (BalanceResponseDTO.BalanceOutput2 balanceOutput2 : balance.getOutput2()) {
-            long profit = Long.parseLong(balanceOutput2.getPchsAmtSmtlAmt());
+        Long profit = Long.parseLong( (String) output2.get("pchsAmtSmtlAmt"));
+
 
             if(profit < 100_000_000) {
                 otherStockBalanceDto = new OtherStockBalanceDto("1억원 미만");
@@ -77,7 +109,6 @@ public class StockController {
                 otherStockBalanceDto = new OtherStockBalanceDto("100억원 이상");
             }
 
-        }
 
         return ResponseEntity.ok(otherStockBalanceDto);
     }
