@@ -71,7 +71,7 @@ public class StockController {
                     .evluPflsAmt((String) output1.get("evluPflsAmt"))
                     .currentPrice((String) output1.get("currentPrice"))
                     .quantity((String) output1.get("quantity"))
-                    .holdingRatio(String.valueOf(((double) (Long.parseLong((String) output1.get("evluAmt"))) / allAsset) * 100))
+                    .holdingRatio(String.valueOf(((double) (Long.parseLong((String) output1.get("evluAmt"))) / (double)allAsset) * 100))
                     .build();
             myAsset1.add(myAsset);
         }
@@ -127,52 +127,71 @@ public class StockController {
     }
 
     @GetMapping("/my-story/holdings")
-    public ResponseEntity<List<MyStockBalanceDto>> getMyStock(@LoginUserId Long userId) {
+    public ResponseEntity<StockBalanceResponseDto> getMyStock(@LoginUserId Long userId) {
         User user = authService.getUserById(userId);
         Account account = user.getAccount();
         Map<String, Object> map = balanceService.getBalancesByAccountId(account.getId());
 
-        List<MyStockBalanceDto> myStockBalanceDtos = new ArrayList<>();
-        List<Map<String, Object>> lists = (List<Map<String, Object>>) map.get("output1");
+        List<StockBalanceResponseDto.MyStockBalanceDto> myStockBalanceDtos = new ArrayList<>();
+        List<Map<String, Object>> output1 = (List<Map<String, Object>>) map.get("output1");
+        Map<String, Object> output2 = (Map<String, Object>) map.get("output2");
 
-        for(Map<String, Object> balanceOutput1 : lists) {
-            myStockBalanceDtos.add(MyStockBalanceDto.builder()
+        Long allAsset = Long.parseLong((String) output2.get("pchsAmtSmtlAmt"));
+        Long evluAsset = Long.parseLong((String) output2.get("evluPflsSmtlAmt"));
+
+
+        for(Map<String, Object> balanceOutput1 : output1) {
+            myStockBalanceDtos.add(StockBalanceResponseDto.MyStockBalanceDto.builder()
                             .stockName((String) balanceOutput1.get("stockName"))
                             .stockCode((String) balanceOutput1.get("stockCode"))
                             .quantity(Integer.valueOf((String) balanceOutput1.get("quantity")))
-                            .averagePrice(Integer.valueOf((String) balanceOutput1.get("evluAmt")))
+                            .averagePrice((int) Double.parseDouble((String) balanceOutput1.get("pchsAvgPric")))
                             .earningRate(Double.parseDouble((String) balanceOutput1.get("evluPflsRt")))
                             .currentPrice(Integer.valueOf((String) balanceOutput1.get("currentPrice")))
+                            .holdingRatio(((double) (Long.parseLong((String) balanceOutput1.get("evluAmt"))) / (double) allAsset) * 100)
                     .build());
         }
 
-        return ResponseEntity.ok(myStockBalanceDtos);
+        return ResponseEntity.ok(StockBalanceResponseDto.builder()
+                .stocksInfos(myStockBalanceDtos)
+                .roi(((double) evluAsset / allAsset) * 100)
+                .build());
 
     }
 
     @GetMapping("/my-story/holdings/{userId}")
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "타인의 주식 종목 조회 API")
-    public ResponseEntity<List<MyStockBalanceDto>> getOtherStock(@PathVariable("userId") Long userId) {
+    public ResponseEntity<StockBalanceResponseDto> getOtherStock(@PathVariable("userId") Long userId) {
         User user = authService.getUserById(userId);
         Account account = user.getAccount();
         Map<String, Object> map = balanceService.getBalancesByAccountId(account.getId());
 
-        List<MyStockBalanceDto> myStockBalanceDtos = new ArrayList<>();
-        List<Map<String, Object>> lists = (List<Map<String, Object>>) map.get("output1");
+        List<StockBalanceResponseDto.MyStockBalanceDto> myStockBalanceDtos = new ArrayList<>();
+        List<Map<String, Object>> output1 = (List<Map<String, Object>>) map.get("output1");
+        Map<String, Object> output2 = (Map<String, Object>) map.get("output2");
 
-        for(Map<String, Object> balanceOutput1 : lists) {
-            myStockBalanceDtos.add(MyStockBalanceDto.builder()
+        Long allAsset = Long.parseLong((String) output2.get("pchsAmtSmtlAmt"));
+        Long evluAsset = Long.parseLong((String) output2.get("evluPflsSmtlAmt"));
+
+
+        for(Map<String, Object> balanceOutput1 : output1) {
+            myStockBalanceDtos.add(StockBalanceResponseDto.MyStockBalanceDto.builder()
                     .stockName((String) balanceOutput1.get("stockName"))
                     .stockCode((String) balanceOutput1.get("stockCode"))
                     .quantity(Integer.valueOf((String) balanceOutput1.get("quantity")))
-                    .averagePrice(Integer.valueOf((String) balanceOutput1.get("evluAmt")))
+                    .averagePrice((int) Double.parseDouble((String) balanceOutput1.get("pchsAvgPric")))
                     .earningRate(Double.parseDouble((String) balanceOutput1.get("evluPflsRt")))
                     .currentPrice(Integer.valueOf((String) balanceOutput1.get("currentPrice")))
+                    .holdingRatio(((double) (Long.parseLong((String) balanceOutput1.get("evluAmt"))) / (double) allAsset) * 100)
                     .build());
         }
 
-        return ResponseEntity.ok(myStockBalanceDtos);
+        return ResponseEntity.ok(StockBalanceResponseDto.builder()
+                .stocksInfos(myStockBalanceDtos)
+                .roi(((double) evluAsset / allAsset) * 100)
+                .build());
+
 
     }
 }
