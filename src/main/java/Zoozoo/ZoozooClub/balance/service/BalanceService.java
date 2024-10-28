@@ -130,6 +130,9 @@ public class BalanceService {
     public void saveRanking(List<Ranking> rankings) {
 
         ZSetOperations<String, Object> zSet = redisTemplate.opsForZSet();
+        redisTemplate.delete(participantKey);
+        redisTemplate.delete(profitKey);
+        redisTemplate.delete(totalKey);
         rankings.forEach(rank -> zSet.add(participantKey, rank, rank.getUserCount()));
         rankings.forEach(rank -> zSet.add(profitKey, rank, ((double) rank.getProfitValue() / rank.getTotalAmount()) * 100));
         rankings.forEach(rank -> zSet.add(totalKey, rank, rank.getTotalAmount()));

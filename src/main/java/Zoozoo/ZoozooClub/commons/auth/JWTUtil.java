@@ -6,6 +6,7 @@ import java.util.Date;
 import Zoozoo.ZoozooClub.commons.exception.ZoozooException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -18,8 +19,13 @@ public class JWTUtil {
         this.secretKey = secret;
     }
     public Claims getAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes())).build().parseClaimsJws(token).getBody();
-
+        try {
+            return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes())).build().parseClaimsJws(token).getBody();
+        } catch(ExpiredJwtException e) {
+            throw new ZoozooException(HttpStatus.BAD_REQUEST, "토큰이 만료됨");
+        } catch(SignatureException e) {
+            throw new ZoozooException(HttpStatus.BAD_REQUEST, "토큰 서명 이상");
+        }
     }
 
     public String createToken(Long userId, Long clubId) {
