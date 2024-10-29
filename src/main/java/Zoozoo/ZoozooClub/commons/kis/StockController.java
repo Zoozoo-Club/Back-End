@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -152,6 +153,8 @@ public class StockController {
                     .build());
         }
 
+        Collections.sort(myStockBalanceDtos);
+
         return ResponseEntity.ok(StockBalanceResponseDto.builder()
                 .stocksInfos(myStockBalanceDtos)
                 .roi(((double) evluAsset / allAsset) * 100)
@@ -186,6 +189,8 @@ public class StockController {
                     .holdingRatio(((double) (Long.parseLong((String) balanceOutput1.get("evluAmt"))) / (double) allAsset) * 100)
                     .build());
         }
+
+        Collections.sort(myStockBalanceDtos);
 
         return ResponseEntity.ok(StockBalanceResponseDto.builder()
                 .stocksInfos(myStockBalanceDtos)

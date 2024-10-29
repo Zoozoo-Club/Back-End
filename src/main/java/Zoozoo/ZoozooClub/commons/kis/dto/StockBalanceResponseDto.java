@@ -16,7 +16,7 @@ public class StockBalanceResponseDto {
 
     @Getter
     @Builder
-    public static class MyStockBalanceDto {
+    public static class MyStockBalanceDto implements Comparable<MyStockBalanceDto> {
         private final String stockCode;
         private final String stockName;
         private final Integer quantity;
@@ -24,5 +24,12 @@ public class StockBalanceResponseDto {
         private final Integer currentPrice;
         private final Double earningRate;
         private final Double holdingRatio;
+
+        @Override
+        public int compareTo(MyStockBalanceDto o) {
+            if(o.holdingRatio < this.holdingRatio) return -1;
+            else if(o.holdingRatio > this.holdingRatio) return 1;
+            return 0;
+        }
     }
 }
