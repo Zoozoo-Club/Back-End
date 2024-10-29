@@ -45,7 +45,7 @@ public class RankingService {
     /***
      * 1시간에 한 번씩 모든계좌정보 업데이트
      */
-    @Scheduled(fixedRate = 3600000, initialDelay = 5000) // 1시간에 한 번 실행
+    @Scheduled(fixedRate = 60000, initialDelay = 5000) // 1시간에 한 번 실행
     public void updateAllBalances() {
 
         List<Account> accounts = accountService.getAllAccounts();
@@ -184,7 +184,7 @@ public class RankingService {
         return analysis;
     }
 
-    @Scheduled(fixedRate = 3700000, initialDelay = 5000)
+    @Scheduled(fixedRate = 610000, initialDelay = 6000)
     public void updateRanking() {
         List<User> users = authService.getAllUser();
         Map<Long, Ranking> rankings = new HashMap<>();
